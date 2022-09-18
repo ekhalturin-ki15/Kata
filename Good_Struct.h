@@ -1,45 +1,58 @@
 #pragma once
-
-#include <functional>
 #include <iostream>
-
+#include <algorithm>
+#include <string>
+#include <vector>
+#include <algorithm>
 using namespace std;
-
-struct dat
+ 
+template <typename T>
+struct True_DSU
 {
-	__int64 el;
+	vector<T> v, rank, pr, s;
+	int n;
+	int count;
 
-	//-----   Изменения   --------
-	__int64 change_add = 0; //Прибавка
-	bool dead_end = false; //Проверка на лист
+	True_DSU() = delete;
 
-	friend ostream& operator<<(ostream& is, const dat& l);
-};
+	True_DSU(const vector<T>& v_) : v{v_}
+	{
+		n = v.size();
+		count = n;
+		rank.assign(n, 0);
+		s.assign(n, 1);
+		pr.resize(n); int i = 0; for (auto& it : pr) it = i++;
+	}
 
+	int Find(int i)
+	{
+		if (i == pr[i]) return i;
+		return (pr[i] = Find(pr[i]));
+	}
 
-//Дерево отрезков
-//Проверено на http://acmp.ru/asp/do/index.asp?main=task&id_course=2&id_section=20&id_topic=47&id_problem=608
-struct DO
-{
+	bool isSame(int l, int r)
+	{
+		return (Find(l) == Find(r));
+	}
 
-private:
-	vector<dat> mas; //Само дерево
-	vector<__int64> v; //Исходный
-	int l, r, n, x;
-	function<dat(dat, dat)> fun;//Операция
+	void Merge(int l_, int r_)
+	{
+		int l = Find(l_);
+		int r = Find(r_);
+		if (l == r) return;
 
-public:
-	void create(vector<__int64>& _v, function<dat(dat, dat)> _fun);
+		// Объединяем
+		--count;
+		if (rank[l] == rank[r]) ++rank[l];
 
-	void update_add(int _l, int _r, int _x);
+		if (rank[l] > rank[r])
+		{
+			s[l] += s[r];
+			pr[r] = l;
+			return;
+		}
 
-	dat get(int _l, int _r);
-
-private:
-	void create_rec(int ii, int l, int r);
-
-	void update_add_rec(int ii, int ll, int rr);
-
-	dat get_rec(int ii, int ll, int rr);
-
+		s[r] += s[l];
+		pr[l] = r;	
+	}
 };

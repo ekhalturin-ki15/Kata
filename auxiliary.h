@@ -37,6 +37,17 @@ void Random_Array(vector<Type>& mas, const  size_t& size_min = 0,
 	sort(mas.begin(), mas.end());
 }
 
+template <typename Tf, typename Ts>
+void swap(pair<Tf, Ts>& T);
+
+template <typename ... Ts>
+std::string to_string(const Ts& ... ts);
+
+template <typename... Args>
+std::string to_string(const std::tuple<Args...>& t);
+
+template <typename Tf>
+std::string to_string(const vector<Tf>& v);
 
 template <typename Tf, typename Ts>
 std::string to_string(const pair<Tf, Ts>& T)

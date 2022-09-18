@@ -9,6 +9,7 @@
 #include "auxiliary.h"
 #include "Good_Number.h"
 #include "Good_Struct.h"
+#include "Good_Extra_Struct.h"
 
 
 #include <vector>
@@ -225,30 +226,37 @@ namespace String
 		TEST_METHOD(TestSame) // Обычный тест
 		{
 			s = "AAAAAAAAAA";
-			Assert::AreEqual(to_string(True_Manacher(s)), to_string(Manacher(s)));
+			Assert::AreEqual(to_string(True_Manacher(s)), string("1,2,3,4,5,5,4,3,2,1, 1,2,3,4,5,4,3,2,1,0,"));
 		}
 
 		TEST_METHOD(Test1)
 		{
 			s = "ABABABABA";
-			Assert::AreEqual(to_string(True_Manacher(s)), to_string(Manacher(s)));
+			Assert::AreEqual(to_string(True_Manacher(s)), string("1,2,3,4,5,4,3,2,1, 0,0,0,0,0,0,0,0,0,"));
 		}
 
 		TEST_METHOD(Test2)
 		{
 			s = "CCAABBAACC";
-			Assert::AreEqual(to_string(True_Manacher(s)), to_string(Manacher(s)));
+			Assert::AreEqual(to_string(True_Manacher(s)), string("1,1,1,1,1,1,1,1,1,1, 1,0,1,0,5,0,1,0,1,0,"));
 		}
 
 		TEST_METHOD(TestACMP1) // С задачи https://acmp.ru/asp/do/index.asp?main=task&id_course=2&id_section=18&id_topic=42&id_problem=282
 		{
 			s = "ABRACADABRA";
-			Assert::AreEqual(to_string(True_Manacher(s)), to_string(Manacher(s)));
+			Assert::AreEqual(to_string(True_Manacher(s)), string("1,1,1,1,2,1,2,1,1,1,1, 0,0,0,0,0,0,0,0,0,0,0,"));
 		}
 
 		TEST_METHOD(TestACMP2) // С задачи https://acmp.ru/asp/do/index.asp?main=task&id_course=2&id_section=18&id_topic=42&id_problem=282
 		{
 			s = "ABACABADABACABA";
+			Assert::AreEqual(to_string(True_Manacher(s)), string("1,2,1,4,1,2,1,8,1,2,1,4,1,2,1, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"));
+		}
+
+		TEST_METHOD(TestRand) // С задачи https://acmp.ru/asp/do/index.asp?main=task&id_course=2&id_section=18&id_topic=42&id_problem=282
+		{
+			s.resize(100);
+			std::generate(s.begin(), s.end(), []()  { return rand()%26 +'a'; });
 			Assert::AreEqual(to_string(True_Manacher(s)), to_string(Manacher(s)));
 		}
 	};
@@ -263,50 +271,57 @@ namespace Number
 	public:
 		TEST_METHOD(Test1) // Обычный тест
 		{
-			Assert::AreEqual(to_string(True_Bin_Pow(2, 10, 10000)), to_string(""));
+			Assert::AreEqual(to_string(True_Bin_Pow(2, 10, 10000)), to_string("1024"));
 		}
 		TEST_METHOD(TestMin) // Обычный тест
 		{
-			Assert::AreEqual(to_string(True_Bin_Pow(777, 0, 10000)), to_string(""));
+			Assert::AreEqual(to_string(True_Bin_Pow(777, 0, 10000)), to_string("1"));
 		}
 		TEST_METHOD(Test2) // Обычный тест
 		{
-			Assert::AreEqual(to_string(True_Bin_Pow(2, 1e18, 1e9)), to_string(""));
+			Assert::AreEqual(to_string(True_Bin_Pow(2, 1e18, 1e9)), to_string("787109376"));
 		}
 	};
 
 }
 
-namespace My_Struct
+
+namespace Struct
 {
-	TEST_CLASS(DO_)
+	TEST_CLASS(DSU_)
 	{
 	public:
 		TEST_METHOD(Test1) // Обычный тест
 		{
-			DO data;
-			vector <__int64> v = { 2, 4, 3 ,5, 2 }; vector<__int64> answer;
-			data.create(v, [](dat l, dat r) {dat re; re.el = l.el + r.el; return re; });
-			answer.push_back(data.get(1, 1).el);
-			answer.push_back(data.get(4, 4).el);
-			data.update_add(0, 2, 10);
-			answer.push_back(data.get(1, 1).el);
-			answer.push_back(data.get(3, 3).el);
-			Assert::AreEqual(to_string(answer), to_string(""));
-		}
-
-		TEST_METHOD(Test2) // Обычный тест
-		{
-			DO data;
-			vector <__int64> v = { 2, 4, 3 ,5, 2 }; vector<__int64> answer;
-			data.create(v, [](dat l, dat r) {dat re; re.el = l.el + r.el; return re; });
-			answer.push_back(data.get(1, 1).el);
-			answer.push_back(data.get(4, 4).el);
-			data.update_add(0, 2, 10);
-			data.update_add(2, 4, 10);
-			answer.push_back(data.get(0, 4).el);
-			answer.push_back(data.get(1, 2).el);
-			Assert::AreEqual(to_string(answer), to_string(""));
+			True_DSU<int> d({1, 5, 7, 8, 3, 4 ,2, 0, 1, -1});
+			d.Merge(0, 9);
+			d.Merge(1, 2);
+			d.Merge(2, 3);
+			d.Merge(7, 8);
+			d.Merge(8, 9);
+			d.Merge(0, 1);
+			Assert::IsTrue(d.isSame(0, 7));
+			Assert::IsFalse(d.isSame(5, 6));
+			Assert::IsFalse(d.isSame(1, 6));
+			Assert::IsTrue(d.isSame(7, 1));
+			Assert::AreEqual(4, d.count);
 		}
 	};
+
+}
+
+namespace Extra_Struct
+{
+	TEST_CLASS(Heap_)
+	{
+	public:
+		TEST_METHOD(Test1) // Обычный тест
+		{
+			True_Heap<int> d({ 1, 5, 7, 8, 3, 4 ,2, 0, 1, -1 });
+			Assert::AreEqual(-1, d.Top());
+			d.Pop();
+			Assert::AreEqual(0, d.Top());
+		}
+	};
+
 }

@@ -33,3 +33,4 @@ pair<int, int> True_Binary_search(const vector<__int64>& mas, __int64 x)
 	if (mas[left] != x) swap(answer.first, answer.second);
 	return answer;
 }
+
